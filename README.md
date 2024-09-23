@@ -5,4 +5,5 @@ Autores:
 * Ovidio Navarro
 * Juan Jose Muñoz
 * Jesus Armando Padron
+* Abdel Fregel Hernández
 
