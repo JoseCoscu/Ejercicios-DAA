@@ -1,10 +1,4 @@
-# graph = [[0, 1, 1, 1, 0, 0, 0],
-#          [1, 0, 0, 0, 0, 0, 0],
-#          [1, 0, 0, 0, 1, 0, 0],
-#          [1, 0, 0, 0, 1, 0, 0],
-#          [0, 0, 1, 1, 0, 1, 0],
-#          [0, 0, 0, 0, 1, 0, 1],
-#          [0, 0, 0, 0, 0, 1, 0]]
+import random
 import copy
 import itertools
 
@@ -72,7 +66,7 @@ class Graph:
 
     def remove_nodes(self, nodes_to_remove: list):
 
-        #eliminando aristas
+        # eliminando aristas
         for i in nodes_to_remove:
             for e in range(len(self.edges)):
                 if i in self.edges[e]:
@@ -112,56 +106,56 @@ class Graph:
             return i
 
     def set_cover(self):
-        S = []
-        for i in G.nodes:
+        S = []  # Lista de subconjuntos
+        representantes = []  # Lista de representantes
+        best_subsets = []
+        # Crear los subconjuntos
+        for i in self.nodes:
+            # El representante del subconjunto es el nodo actual
+            representantes.append(i)
+            # El subconjunto es el nodo actual y sus vecinos
             S.append({i}.union(i.neighbors))
-        U_prime = set(self.nodes)  # Los elementos no cubiertos inicialmente son el univerdso
-        C = []  # El conjunto solución (conjuntos seleccionados)
+
+        U_prime = set(self.nodes)  # Elementos no cubiertos inicialmente
+        C = []  # Conjunto solución (representantes seleccionados)
 
         while U_prime:
-            # Seleccionar el subconjunto que cubre el mayor número de elementos aún no cubiertos
-            best_set = max(S, key=lambda s: len(s & U_prime))
+            # Seleccionar el subconjunto que cubre el mayor número de elementos no cubiertos
+            best_set_index = max(range(len(S)), key=lambda i: len(S[i] & U_prime))
+            best_set = S[best_set_index]
+            best_subsets.append(best_set)
+            # Obtener el representante del subconjunto seleccionado
+            representative = representantes[best_set_index]
 
-            # Añadir el subconjunto seleccionado al conjunto solución
-            C.append(best_set)
+            # Agregar el representante al conjunto solución
+            C.append(representative)
 
             # Eliminar los elementos cubiertos por el subconjunto seleccionado
             U_prime -= best_set
 
-        return C
+        return C, best_subsets
 
 
+def crear_grafo_aleatorio(n_nodos):
+    """
+    Crea un grafo aleatorio con n_nodos nodos.
 
-nodes = []
+    Args:
+        n_nodos: Un entero positivo que representa el número de nodos en el grafo.
 
-for i in range(0, 7):
-    nodes.append(Node(i))
+    Returns:
+        Un objeto de grafo NetworkX.
+    """
+    nodes = [Node(i) for i in range(1, n_nodos + 1)]
 
-G = Graph(nodes)
+    # Crear un grafo vacío
+    grafo = Graph(nodes)
 
-G.connect_nodes(nodes[0], nodes[1])
-G.connect_nodes(nodes[0], nodes[2])
-G.connect_nodes(nodes[0], nodes[3])
-G.connect_nodes(nodes[3], nodes[4])
-G.connect_nodes(nodes[2], nodes[4])
-G.connect_nodes(nodes[4], nodes[5])
-G.connect_nodes(nodes[5], nodes[6])
+    # Agregar aristas aleatoriamente
+    for i in range(n_nodos):
+        for j in range(i + 1, n_nodos):
+            # Probabilidad aleatoria de agregar una arista
+            if random.random() < 0.5:  # Ajusta la probabilidad aquí
+                grafo.connect_nodes(nodes[i], nodes[j])
 
-S = []
-
-for i in G.nodes:
-    S.append({i}.union(i.neighbors))
-
-
-c = G.set_cover()
-
-# Ejemplo de uso
-# mi_lista = [1, 2, 3]
-# # subconjuntos = obtener_subconjuntos(mi_lista)
-#
-# # Imprimir los subconjuntos
-# for subconjunto in subconjuntos:
-#     print(subconjunto)
-guardians = G.get_guardians()
-print(guardians)
-print(c)
+    return grafo
