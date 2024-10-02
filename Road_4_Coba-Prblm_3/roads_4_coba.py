@@ -1,4 +1,5 @@
 from coba_island import Node, Graph
+import itertools
 
 
 class P_Node(Node):
@@ -70,7 +71,7 @@ class P_Graph(Graph):
         alt_g = P_Graph(nodes)
         alt_g.edges = p_edges
         parent = []
-        rank=[]
+        rank = []
         for i in range(0, len(alt_g.nodes)):
             parent.append(i)
             rank.append(1)
@@ -81,18 +82,8 @@ class P_Graph(Graph):
             for i in alt_g.edges:
                 x_parent = alt_g.set_of(parent, i[0].id)
                 y_parent = alt_g.set_of(parent, i[1].id)
-                if (x_parent != y_parent):
+                if x_parent != y_parent:
                     edges_kruskal.append(i)
-
-                    # if rank[x_parent]>rank[y_parent]:
-                    #     parent[i[1].id] = x_parent
-                    #     rank[y_parent] -= 1
-                    #     rank[x_parent] += 1
-                    #
-                    # else:
-                    #     parent[i[0].id] = y_parent
-                    #     rank[y_parent]+=1
-                    #     rank[x_parent]-=1
 
                     if rank[i[0].id] < rank[i[1].id]:
                         parent[i[0].id] = i[1].id
@@ -104,10 +95,18 @@ class P_Graph(Graph):
                     else:
                         parent[i[1].id] = i[0].id
                         rank[i[0].id] += 1
+                    if len(edges_kruskal)==len(nodes)-1:
+                        count = 0
+                        for i in edges_kruskal:
+                            count += i[2]
+                        return edges_kruskal, count
 
-            return edges_kruskal
+            count = 0
+            for i in edges_kruskal:
+                count += i[2]
+            return edges_kruskal, count
         else:
-            return ' no es un grafo conexo'
+            return -1
 
     def set_of(self, parent, id):
         if parent[id] == id:
@@ -115,86 +114,50 @@ class P_Graph(Graph):
         new_id = parent[id]
         return self.set_of(parent, new_id)
 
+    def get_subsetss(self, iterable):
+        subconjuntos = []
+        # Iterar sobre todos los tamaños posibles de subconjuntos (de 0 a len(lista))
+        for r in range(len(iterable) + 1):
+            # Generar todas las combinaciones de tamaño r
+            subconjuntos.extend(itertools.combinations(iterable, r))
+        return subconjuntos
 
-# class Grafo:
-#     def __init__(self, nodes: list):
-#         self.V = nodes
-#         self.grafo = []
-#
-#     def agregar_arista(self, u, v, w):
-#         self.grafo.append([u, v, w])
-#
-#     def buscar(self, padre, i):
-#         if padre[i] == i:
-#             return i
-#         return self.buscar(padre, padre[i])
-#
-#     def union(self, padre, rango, x, y):
-#         x_raiz = self.buscar(padre, x)
-#         y_raiz = self.buscar(padre, y)
-#
-#         if rango[x_raiz] < rango[y_raiz]:
-#             padre[x_raiz] = y_raiz
-#         elif rango[x_raiz] > rango[y_raiz]:
-#             padre[y_raiz] = x_raiz
-#         else:
-#             padre[y_raiz] = x_raiz
-#             rango[x_raiz] += 1
-#
-#     def kruskal(self):
-#         resultado = []
-#         i, e = 0, 0
-#         self.grafo = sorted(self.grafo, key=lambda item: item[2])
-#         padre = []
-#         rango = []
-#
-#         for nodo in range(self.V):
-#             padre.append(nodo)
-#             rango.append(0)
-#
-#         while e < self.V - 1:
-#             u, v, w = self.grafo[i]
-#             i += 1
-#             x = self.buscar(padre, u)
-#             y = self.buscar(padre, v)
-#
-#             if x != y:
-#                 e += 1
-#                 resultado.append([u, v, w])
-#                 self.union(padre, rango, x, y)
-#
-#         return resultado
-#
-#
-# # Ejemplo de uso
-# g = Grafo(4)
-# g.agregar_arista(0, 1, 10)
-# g.agregar_arista(0, 2, 6)
-# g.agregar_arista(0, 3, 5)
-# g.agregar_arista(1, 3, 15)
-# g.agregar_arista(2, 3, 4)
-#
-# arbol_recubridor_minimo = g.kruskal()
-# for u, v, w in arbol_recubridor_minimo:
-#     print(f"Arista {u} - {v} con peso {w}")
+    def brute(self):
+        edges = self.check_edges()
+        sset = self.get_subsetss(edges)
+        sset.pop(0)
 
-nodes = [P_Node(0, 1), P_Node(1, 2), P_Node(2, 1), P_Node(3, 2)]
+        dic = {}
+        for i in sset:
+            cout = 0
+            for j in i:
+                cout += j[2]
+            dic[i] = cout
+        dic = dict(sorted(dic.items(), key=lambda x: x[1]))
 
-g = P_Graph(nodes)
+        keys = list(dic.keys())
+        for i in keys:
+            nodes = [P_Node(i.id, i.meaning) for i in self.nodes]
+            g = P_Graph(nodes)
+            for j in i:
+                node1 = nodes.index(j[0])
+                node2 = nodes.index(j[1])
+                g.connect_nodes(nodes[node1], nodes[node2])
+            if g.is_conx():
+                return i, dic[i]
+        return -1
 
-g.connect_nodes_weight(nodes[0], nodes[1], 0)
-g.connect_nodes_weight(nodes[2], nodes[3], 0)
-g.connect_nodes_weight(nodes[0], nodes[2], 1)
-g.connect_nodes_weight(nodes[1], nodes[3], 2)
-
-e = g.get_max_tree()
-print(e)
-
-# parent=[1,2,2,0]
-# def set_of(parent, id):
-#     if parent[id] == id:
-#         return id
-#     new_id = parent[id]
-#     return set_of(parent, new_id)
+# nodes = [P_Node(0, 1), P_Node(1, 2), P_Node(2, 1), P_Node(3, 2)]
 #
-# print(set_of(parent,3))
+# g = P_Graph(nodes)
+#
+# g.connect_nodes_weight(nodes[0], nodes[1], 0)
+# g.connect_nodes_weight(nodes[2], nodes[3], 0)
+# g.connect_nodes_weight(nodes[0], nodes[2], 1)
+# g.connect_nodes_weight(nodes[1], nodes[3], 2)
+#
+# l = g.brute()
+# print(l)
+#
+# e = g.get_max_tree()
+# print(e)
