@@ -85,16 +85,16 @@ class P_Graph(Graph):
                 if x_parent != y_parent:
                     edges_kruskal.append(i)
 
-                    if rank[alt_g.set_of(parent, i[0].id)] < rank[alt_g.set_of(parent, i[1].id)]:###probar con el parent adentro rank del parent
+                    if rank[x_parent] < rank[y_parent]:###probar con el parent adentro rank del parent
                         parent[x_parent] = alt_g.set_of(parent, i[1].id)
                         rank[parent[i[0].id]] += 1
-                    elif rank[alt_g.set_of(parent, i[0].id)] > rank[alt_g.set_of(parent, i[1].id)]:
-                        parent[y_parent] = alt_g.set_of(parent, i[0].id)
+                    elif rank[x_parent] > rank[y_parent]:
+                        parent[y_parent] = x_parent
                         rank[parent[i[1].id]] += 1
                         # If ranks are same, then make one as root
                         # and increment its rank by one
                     else:
-                        parent[y_parent] = alt_g.set_of(parent, i[0].id)
+                        parent[y_parent] = x_parent
                         rank[parent[i[1].id]] += 1
                     # if len(edges_kruskal)==len(nodes)-1:
                     #     count = 0
