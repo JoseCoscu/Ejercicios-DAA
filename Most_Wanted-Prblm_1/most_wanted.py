@@ -1,3 +1,6 @@
+from itertools import permutations
+
+
 arr1=['p','p','p','','p','','','c','','p',''] #output: 2
 #          pi                          pj
 arr2=['p','p','','p','','','c','','','p'] #output: 3
@@ -27,6 +30,7 @@ def crim_max(arr):
 
 
 
-print(crim_max(arr1))
-print(crim_max(arr2))
-print(crim_max(arr3))
+# print(crim_max(arr1))
+# print(crim_max(arr2))
+# print(crim_max(arr3))
+
