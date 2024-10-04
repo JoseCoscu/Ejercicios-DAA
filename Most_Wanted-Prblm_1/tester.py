@@ -1,4 +1,5 @@
-pol = [0, 2, 4, 6, 9]
+import random
+pol = [2,3,4, 6]
 c = 5
 m = 10
 
@@ -17,7 +18,7 @@ def simulation(pol, c, m):
         if not criminal or len(pol_left) + len(pol_right) == 0:
             break
         while len(pol_right) + len(pol_left) > 0:
-            print(pol_left + pol_right, '------', c)
+            # print(pol_left + pol_right, '------', c)
             if not (c - 1 in pol_left):
                 for i in range(0, len(pol_left)):
                     pol_left[i] += 1
@@ -72,9 +73,9 @@ def simulation(pol, c, m):
                     for i in range(0, len(pol_right)):
                         pol_right[i] -= 1
 
-            if len(pol_left) >= 0 and len(pol_right) > 0:
-                if c - pol_left[-1] >= pol_right[0] - c:
-                    if c - pol_left[-1] == 1:
+            if len(pol_left) > 0 and len(pol_right) > 0:
+                if c - pol_left[len(pol_left)-1] >= pol_right[0] - c:
+                    if c - pol_left[len(pol_left)-1] == 1:
                         criminal = False
                         break
                     if not (c + 1 in pol_right):
@@ -105,8 +106,10 @@ def simulation(pol, c, m):
                 else:
                     criminal = False
                     break
-    print('final', pol_left + pol_right , '---------', criminal)
-    return (len(pol_left) + len(pol_right)),criminal
+   
+   
+    # print('final', pol_left + pol_right , '---------', criminal)
+    return len(pol)-(len(pol_left) + len(pol_right)),criminal
 
 
 
@@ -122,25 +125,49 @@ def solution(pol, c, m):
         if(pol[i]-c>0 and (pol[i]-c)%2==0):
             sucesor=i
             break
-    print('antecesor', antecesor, 'sucesor', sucesor)
+    # print('antecesor', antecesor, 'sucesor', sucesor)
     if(antecesor==-1 and sucesor==len(pol)):
         return (len(pol)),True
     elif(antecesor!=-1 and sucesor==len(pol)):
         return len(pol)-antecesor-1,False
     elif(antecesor==-1 and sucesor!=len(pol)):
-        return len(pol)-sucesor-1,False
+        return sucesor,False
     else:
-        return sucesor-antecesor-2
+        return sucesor-antecesor-1,False
 
 
 
-print(solution(pol, c, m))
+# print(solution(pol, c, m))
 
+# print(simulation(pol, c, m))
 
+def generate_test_cases():
+    test_cases = []
+    for i in range(1, 1000):
+        n=random.randint(1, 40)
+        
+        aux=list(range(1, 50))
+        pol = []
+        
+        for j in range(0, n):
+            elem = random.choice(aux)
+            aux.remove(elem)
+            pol.append(elem)
+        c=pol[0]
+        while c in pol:
+            c=random.randint(0, 49)
+        m = 50
+        test_cases.append((pol, c, m, ))
+    return test_cases
 
+a=generate_test_cases()
+cant_true=0
+cant_false=0
+for i in range(0, len(a)):
+    if(solution(a[i][0], a[i][1], a[i][2])==simulation(a[i][0], a[i][1], a[i][2])):
+        cant_true+=1
+    else:
+        cant_false+=1
 
-
-
-
-
-# simulation(pol, c, m)
+print('true:', cant_true, ', false:', cant_false)
+    
