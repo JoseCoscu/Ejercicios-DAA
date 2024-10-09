@@ -29,7 +29,9 @@ def crear_grafo_aleatorio(n_nodos):
     return grafo
 
 
-for i in range(10):
-    g = crear_grafo_aleatorio(10)
-    print(g.brute())
-    print(g.get_max_tree())
+for i in range(1000):
+    g = crear_grafo_aleatorio(20)
+    brute = g.brute()
+    greedy = g.get_max_tree()
+    print(brute)
+    print(greedy)

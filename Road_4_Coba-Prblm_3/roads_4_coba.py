@@ -147,18 +147,3 @@ class P_Graph(Graph):
             if g.is_conx():
                 return i, dic[i]
         return -1
-
-# nodes = [P_Node(0, 1), P_Node(1, 2), P_Node(2, 1), P_Node(3, 2)]
-#
-# g = P_Graph(nodes)
-#
-# g.connect_nodes_weight(nodes[0], nodes[1], 0)
-# g.connect_nodes_weight(nodes[2], nodes[3], 0)
-# g.connect_nodes_weight(nodes[0], nodes[2], 1)
-# g.connect_nodes_weight(nodes[1], nodes[3], 2)
-#
-# l = g.brute()
-# print(l)
-#
-# e = g.get_max_tree()
-# print(e)
