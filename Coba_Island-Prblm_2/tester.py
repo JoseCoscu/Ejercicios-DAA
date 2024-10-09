@@ -1,73 +1,73 @@
 import matplotlib.pyplot as plt
 import networkx as nx
 from coba_island import *
+import threading
+import sys
+import time
+
+l1 = 0
+l2 = 0
+l3 = 0
 
 
-coutn1 = []
-coutn2 = []
-coutn3 = []
-#
-# for i in range(1000):
-#     G = crear_grafo_aleatorio(20)
-#
-#     setcover, sets = G.set_cover()
-#     guardians = G.get_guardians()
-#
-#     if abs(len(setcover) - len(guardians)) == 1:
-#         coutn1.append(1)
-#     if abs(len(setcover) - len(guardians)) == 2:
-#         coutn2.append(2)
-#     if abs(len(setcover) - len(guardians)) == 3:
-#         coutn3.append(3)
-#
-#     print(guardians)  # Fuerza Bruta
-#     print(setcover)  # Greedy
-#
-# print(coutn1)
-# print(len(coutn1))
-#
-# print(coutn2)
-# print(len(coutn2))
-#
-# print(coutn3)
-# print(len(coutn3))
+# Función que muestra el mensaje de "procesando..." con puntos animados
+def procesando():
+    while not finalizar.is_set():
+        for i in range(4):  # Repite de 0 a 3 puntos
+            if finalizar.is_set():
+                break
+            sys.stdout.write("\rProcesando" + "." * i + " " * (3 - i))
+            sys.stdout.flush()
+            time.sleep(0.5)  # Pausa de 0.5 segundos entre cada punto
 
 
-# Define las listas
-lista1 = [1, 3, 5, 7, 9]
-lista2 = [2, 4, 6, 8, 10]
-lista3 = [1.5, 3.5, 5.5, 7.5, 9.5]
+# Crear un evento para detener el hilo
+finalizar = threading.Event()
 
-# Crea los datos para la gráfica
-x = range(len(lista1))  # Índice de cada elemento
-y1 = lista1
-y2 = lista2
-y3 = lista3
+# Inicia el hilo para la animación de "procesando..."
+hilo_procesando = threading.Thread(target=procesando)
+hilo_procesando.start()
 
-# Crea la gráfica
-plt.plot(x, y1, label='Lista 1', marker='o', linestyle='-')
-plt.plot(x, y2, label='Lista 2', marker='s', linestyle='--')
-plt.plot(x, y3, label='Lista 3', marker='^', linestyle='-.')
+# Aquí colocas el resto del código del programa
+# Simulando una tarea larga
+try:
+    for i in range(10):
+        G = crear_grafo_aleatorio_bi(20)
 
-# Añade etiquetas a los ejes
-plt.xlabel('Índice')
-plt.ylabel('Valor')
+        setcover, sets = G.set_cover()
+        guardians = G.get_guardians()
+        print(setcover)
+        print(guardians)
 
-# Añade una leyenda
-plt.legend()
+        if abs(len(setcover) - len(guardians)) == 1:
+            l1 += 1
+        if abs(len(setcover) - len(guardians)) == 2:
+            l2 += 1
+        if abs(len(setcover) - len(guardians)) == 3:
+            l3 += 1
 
-# Muestra la gráfica
+finally:
+    # Al terminar la tarea, señalizamos el evento de finalización
+    finalizar.set()
+    # Esperamos a que el hilo termine
+    hilo_procesando.join()
+
+# Limpiar la línea de procesamiento al finalizar
+sys.stdout.write("\rProceso completado.         \n")
+
+
+
+diferencias = [l1, l2, l3]
+etiquetas = [f'1 elemento: {l1} ', f'2 elementos: {l2}', f'3 elementos: {l3}']
+
+# Crear gráfica de barras
+plt.bar(etiquetas, diferencias, color=['blue', 'orange', 'green'])
+
+# Agregar títulos y etiquetas
+plt.title('Comparación de diferencias entre Greedy y Fuerza Bruta')
+plt.xlabel('Diferencia en número de elementos')
+plt.ylabel('Cantidad de ocurrencias')
+
+
+# Mostrar la gráfica
 plt.show()
-
-# Crear un grafo aleatorio con 10 nodos
-grafo_aleatorio = crear_grafo_aleatorio(10)
-
-# Mostrar el grafo
-print(grafo_aleatorio.nodes)  # Muestra los nodos
-print(grafo_aleatorio.edges)  # Muestra las aristas
-
-# Visualizar el grafo
-nx.draw(grafo_aleatorio, with_labels=True)
-plt.show()
-
-

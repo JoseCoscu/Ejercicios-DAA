@@ -159,3 +159,23 @@ def crear_grafo_aleatorio(n_nodos):
                 grafo.connect_nodes(nodes[i], nodes[j])
 
     return grafo
+
+
+def crear_grafo_aleatorio_bi(n_nodos):
+    nodes = [Node(i) for i in range(1, n_nodos + 1)]
+
+    # Crear un grafo vacío
+    grafo = Graph(nodes)
+
+    s1 = random.sample(nodes, random.randint(1, len(nodes) - 1))
+    s2 = [x for x in nodes if x not in s1]
+
+    # Agregar aristas aleatoriamente
+    for i in range(n_nodos):
+        for j in range(i + 1, n_nodos):
+            # Probabilidad aleatoria de agregar una arista
+            if random.random() < 0.5:  # Ajusta la probabilidad aquí
+                if nodes[i] in s1 and nodes[j] in s2 or nodes[i] in s2 and nodes[j] in s1:
+                    grafo.connect_nodes(nodes[i], nodes[j])
+
+    return grafo
