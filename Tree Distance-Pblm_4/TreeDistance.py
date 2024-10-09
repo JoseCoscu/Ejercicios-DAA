@@ -53,16 +53,16 @@ def find_pairs(node, level=0, pairs=None):
 
 def find_tree_structure(x, y):
     # Iterar sobre posibles valores para a
-    for a in range(int((x + y) ** 0.5) + 1):
+    for kA in range(int((x + y) ** 0.5) + 1):
         # Calcular b usando la fórmula derivada
-        b_squared = x - a**2
-        if b_squared < 0:
+        kB_squared = x - kA**2
+        if kB_squared < 0:
             continue
 
-        b = int(b_squared**0.5)
+        kB = int(kB_squared**0.5)
 
-        if a**2 + b**2 == x and 2 * a * b == y:
-            return (a, b)
+        if kA**2 + kB**2 == x and 2 * kA * kB == y:
+            return (kA, kB)
 
     return None
 
@@ -86,8 +86,8 @@ def draw_tree(root):
 
 
 # Ejemplo de uso
-x = 10  # Número de pares con distancia par
-y = 6  # Número de pares con distancia impar
+x = 8  # Número de pares con distancia par
+y = 8  # Número de pares con distancia impar
 
 # Encontrar a y b
 result = find_tree_structure(x, y)
@@ -99,11 +99,11 @@ if result:
     # Crear y mostrar el árbol
     tree_root = create_tree(a, b)
 
-    print("Representación del árbol:")
-    print_tree(tree_root)
+    # print("Representación del árbol:")
+    # print_tree(tree_root)
 
     # Dibujar el árbol usando matplotlib y networkx
-    draw_tree(tree_root)
+    # draw_tree(tree_root)
 
 else:
     print("No se encontró una solución válida.")
