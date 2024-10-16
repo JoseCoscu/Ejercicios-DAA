@@ -3,7 +3,7 @@ pol = [2,3,4, 6]
 c = 5
 m = 10
 
-
+#fuerza bruta
 def simulation(pol, c, m):
     pol = sorted(pol)
     limit_right = 0
@@ -112,8 +112,8 @@ def simulation(pol, c, m):
     return len(pol)-(len(pol_left) + len(pol_right)),criminal
 
 
-
-def solution(pol, c, m):
+# solucion en n logn basada en lemas de el informe
+def solution1(pol, c, m):
     pol = sorted(pol)
     antecesor=-1
     sucesor=len(pol)
@@ -135,12 +135,27 @@ def solution(pol, c, m):
     else:
         return sucesor-antecesor-1,False
 
+# solucion en O(n) basada en lemas del informe
+def solution2(pol,c,m):
+    antecesor=-1
+    sucesor=m
 
+    for i in pol:
+        if i>antecesor and i<c and (c-i)%2==0:
+            antecesor=i
+        if i < sucesor and i >c and (i-c)%2==0:
+            sucesor=i
+    
+    count=0
+    for i in pol:
+        if antecesor<i and i<sucesor:
+            count+=1
+    
+    ret=count==len(pol)
 
-# print(solution(pol, c, m))
+    return count,ret
 
-# print(simulation(pol, c, m))
-
+#generando conjunto de pruebas
 def generate_test_cases():
     test_cases = []
     for i in range(1, 1000):
@@ -164,10 +179,10 @@ a=generate_test_cases()
 cant_true=0
 cant_false=0
 for i in range(0, len(a)):
-    if(solution(a[i][0], a[i][1], a[i][2])==simulation(a[i][0], a[i][1], a[i][2])):
+    if(solution2(a[i][0], a[i][1], a[i][2])==simulation(a[i][0], a[i][1], a[i][2])):
         cant_true+=1
     else:
         cant_false+=1
 
 print('true:', cant_true, ', false:', cant_false)
-    
+# print(solution2(pol,c,m)  )
