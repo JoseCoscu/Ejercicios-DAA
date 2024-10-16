@@ -22,14 +22,14 @@ def crear_grafo_aleatorio(n_nodos):
         for j in range(i + 1, n_nodos):
             # Probabilidad aleatoria de agregar una arista
             if random.random() < 0.5:  # Ajusta la probabilidad aquí
-                l = nodes[i].meaning & nodes[j].meaning
+                l = nodes[i].meaning & nodes[j].meaning if random.random() > 0.7 else random.randint(1, 10)
                 if l != 0:
                     grafo.connect_nodes_weight(nodes[i], nodes[j], l)
 
     return grafo
 
 
-for i in range(1000):
+for i in range(1):
     g = crear_grafo_aleatorio(20)
     brute = g.brute()
     greedy = g.get_max_tree()
